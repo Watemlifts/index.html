@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Watemhost – Trading Bot Subscriptions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f4f8;
+            color: #1a202c;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            color: #2b6cb0;
+        }
+        .subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #4a5568;
+            margin-bottom: 40px;
+        }
+        .plans {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        .plan-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 30px 20px;
+            text-align: center;
+            transition: transform 0.2s;
+            border-top: 6px solid #2b6cb0;
+        }
+        .plan-card:hover {
+            transform: translateY(-5px);
+        }
+        .plan-card.pro {
+            border-top-color: #ecc94b;
+        }
+        .plan-card.enterprise {
+            border-top-color: #38a169;
+        }
+        .plan-name {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .plan-price {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+        .plan-price small {
+            font-size: 1rem;
+            font-weight: normal;
+            color: #718096;
+        }
+        .plan-features {
+            list-style: none;
+            text-align: left;
+            margin: 20px 0;
+            padding: 0;
+        }
+        .plan-features li {
+            padding: 8px 0;
+            border-bottom: 1px solid #edf2f7;
+            display: flex;
+            align-items: center;
+        }
+        .plan-features li::before {
+            content: "✅";
+            margin-right: 10px;
+            color: #38a169;
+        }
+        .btn-select {
+            background: #2b6cb0;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .btn-select:hover {
+            background: #2c5282;
+        }
+        .form-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+        .form-section h2 {
+            margin-bottom: 20px;
+            color: #2d3748;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #4a5568;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #2b6cb0;
+            box-shadow: 0 0 0 3px rgba(43,108,176,0.2);
+        }
+        .payment-info {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid #2b6cb0;
+        }
+        .payment-info p {
+            margin: 10px 0;
+        }
+        .payment-info strong {
+            color: #2d3748;
+        }
+        .footer {
+            text-align: center;
+            color: #718096;
+            font-size: 0.9rem;
+            margin-top: 30px;
+        }
+        .btn-submit {
+            background: #38a169;
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 6px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        .btn-submit:hover {
+            background: #2f855a;
+        }
+        .success-message {
+            background: #c6f6d5;
+            color: #22543d;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            display: none;
+        }
+        .error-message {
+            background: #fed7d7;
+            color: #9b2c2c;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            display: none;
+        }
+        @media (max-width: 700px) {
+            h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <h1>🤖 Watemhost Trading Bot</h1>
+    <p class="subtitle">Automated crypto trading & DeFi signals – subscribe now and start earning!</p>
+
+    <!-- Plan Cards -->
+    <div class="plans">
+        <div class="plan-card">
+            <div class="plan-name">Basic</div>
+            <div class="plan-price">110,000 UGX <small>/ month</small></div>
+            <ul class="plan-features">
+                <li>Daily trading signals</li>
+                <li>Basic portfolio tracking</li>
+                <li>Email alerts</li>
+                <li>Web3 balance checks</li>
+            </ul>
+            <button class="btn-select" onclick="selectPlan('basic')">Select Basic</button>
+        </div>
+
+        <div class="plan-card pro">
+            <div class="plan-name">Pro</div>
+            <div class="plan-price">350,000 UGX <small>/ month</small></div>
+            <ul class="plan-features">
+                <li>Real-time trading signals</li>
+                <li>Advanced portfolio tracking</li>
+                <li>Telegram/Discord alerts</li>
+                <li>Priority support</li>
+                <li>Custom trading strategies</li>
+            </ul>
+            <button class="btn-select" onclick="selectPlan('pro')">Select Pro</button>
+        </div>
+
+        <div class="plan-card enterprise">
+            <div class="plan-name">Enterprise</div>
+            <div class="plan-price">1,750,000 UGX <small>/ year</small></div>
+            <ul class="plan-features">
+                <li>Everything in Pro</li>
+                <li>White-label solution</li>
+                <li>Dedicated API access</li>
+                <li>24/7 phone support</li>
+                <li>Team accounts (up to 5)</li>
+            </ul>
+            <button class="btn-select" onclick="selectPlan('enterprise')">Select Enterprise</button>
+        </div>
+    </div>
+
+    <!-- Sign-up Form -->
+    <div class="form-section">
+        <h2>📝 Subscribe Now</h2>
+        <p>Fill in your details and we'll contact you with payment instructions.</p>
+
+        <form id="subscriptionForm" onsubmit="handleSubmit(event)">
+            <div class="form-group">
+                <label for="firstName">First Name *</label>
+                <input type="text" id="firstName" name="firstName" required />
+            </div>
+            <div class="form-group">
+                <label for="lastName">Last Name *</label>
+                <input type="text" id="lastName" name="lastName" required />
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address *</label>
+                <input type="email" id="email" name="email" required />
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number (for Mobile Money) *</label>
+                <input type="tel" id="phone" name="phone" placeholder="2567XXXXXXXX" required />
+            </div>
+            <div class="form-group">
+                <label for="planSelect">Select Plan *</label>
+                <select id="planSelect" name="plan" required>
+                    <option value="">-- Choose a plan --</option>
+                    <option value="basic">Basic – 110,000 UGX</option>
+                    <option value="pro">Pro – 350,000 UGX</option>
+                    <option value="enterprise">Enterprise – 1,750,000 UGX</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="message">Additional Notes (optional)</label>
+                <input type="text" id="message" name="message" placeholder="Any special requests?" />
+            </div>
+
+            <button type="submit" class="btn-submit">Request Subscription</button>
+        </form>
+
+        <div id="successMessage" class="success-message">
+            ✅ Thank you! We will contact you shortly with payment instructions.
+        </div>
+        <div id="errorMessage" class="error-message">
+            ❌ Something went wrong. Please check your details and try again.
+        </div>
+
+        <!-- Payment Instructions -->
+        <div class="payment-info">
+            <h3>💳 Payment Options</h3>
+            <p><strong>Mobile Money (MTN / Airtel):</strong><br />
+            Send payment to <strong>+256 7XX XXX XXX</strong> (we'll confirm via phone).</p>
+            <p><strong>Bank Transfer:</strong><br />
+            Account Name: Watem Lifts & Electrical Systems Ltd<br />
+            Bank: Stanbic Bank Uganda<br />
+            Account Number: <strong>9030001234567</strong></p>
+            <p><strong>Crypto (USDT / BNB):</strong><br />
+            Wallet address: <strong>0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb8</strong> (BSC)</p>
+            <p style="font-size:0.9rem; color:#718096;">After payment, we'll activate your subscription within 2 hours.</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2026 Watemlifts – All rights reserved. | <a href="mailto:wattsliftselecsys@gmail.com">Contact Support</a>
+    </div>
+</div>
+
+<script>
+    // Pre-fill plan selection when a plan card button is clicked
+    function selectPlan(plan) {
+        document.getElementById('planSelect').value = plan;
+        document.getElementById('planSelect').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Handle form submission
+    function handleSubmit(e) {
+        e.preventDefault();
+
+        // Simple validation
+        const form = document.getElementById('subscriptionForm');
+        const firstName = document.getElementById('firstName').value.trim();
+        const lastName = document.getElementById('lastName').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const plan = document.getElementById('planSelect').value;
+
+        if (!firstName || !lastName || !email || !phone || !plan) {
+            document.getElementById('errorMessage').style.display = 'block';
+            document.getElementById('successMessage').style.display = 'none';
+            return;
+        }
+
+        // Hide error, show success
+        document.getElementById('errorMessage').style.display = 'none';
+        document.getElementById('successMessage').style.display = 'block';
+
+        // Optionally, send form data to your backend or email using a service like Formspree
+        // For now, just display success message and log to console.
+        console.log('Subscription request:', { firstName, lastName, email, phone, plan });
+
+        // Reset form after a delay (optional)
+        // setTimeout(() => form.reset(), 5000);
+    }
+</script>
+</body>
+</html>
