@@ -506,7 +506,9 @@
 </div>
 
 <script>
-    // ===== DEMO DATA =====
+
+<script>
+    // ===== DEMO DATA (unchanged) =====
     const demoData = {
         basic: {
             name: 'Basic',
@@ -543,50 +545,103 @@
     function openDemo(planKey) {
         const data = demoData[planKey];
         if (!data) return;
-
-        // Set title
         document.getElementById('planName').innerText = data.name;
-
-        // Features
         let featHtml = '<ul style="list-style:none; padding:0;">';
         data.features.forEach(f => { featHtml += `<li style="padding:4px 0;">✅ ${f}</li>`; });
         featHtml += '</ul>';
         document.getElementById('modalFeatures').innerHTML = featHtml;
-
-        // Stats
         const profitClass = data.stats.change === 'positive' ? 'green' : 'red';
         document.getElementById('demoStats').innerHTML = `
             <div class="stat"><span class="label">Balance</span><br/><span class="value">${data.stats.balance}</span></div>
             <div class="stat"><span class="label">Total Profit</span><br/><span class="value ${profitClass}">${data.stats.profit}</span></div>
         `;
-
-        // Signals
         let sigHtml = '';
         data.signals.forEach(s => {
             const changeClass = s.change.startsWith('+') ? 'green' : 'red';
             sigHtml += `<li><span>${s.pair}</span><span>${s.price} <span class="signal-change ${changeClass}">${s.change}</span></span></li>`;
         });
         document.getElementById('demoSignals').innerHTML = sigHtml;
-
-        // Show modal
         document.getElementById('demoModal').classList.add('active');
     }
 
     function closeDemo() {
         document.getElementById('demoModal').classList.remove('active');
     }
-
-    // Close on overlay click
     document.getElementById('demoModal').addEventListener('click', function(e) {
         if (e.target === this) closeDemo();
     });
 
-    // ===== FORM SUBMISSION =====
-    document.getElementById('subscriptionForm').addEventListener('submit', function(e) {
+    // ============================================================
+    //  NEW: Handle subscription form submission
+    // ============================================================
+    document.getElementById('subscriptionForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-        // Simple alert – you can replace with AJAX to your backend
-        alert('✅ Your subscription request has been received! We will contact you shortly to confirm payment and activate your 7-day free trial.');
-        this.reset();
+
+        // Gather form data
+        const firstName = document.getElementById('firstName').value.trim();
+        const lastName = document.getElementById('lastName').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const plan = document.getElementById('planSelect').value;
+        const currency = document.getElementById('currency').value;
+        const notes = document.getElementById('notes').value.trim();
+
+        // Validate required fields
+        if (!firstName || !lastName || !email || !phone || !plan || !currency) {
+            alert('Please fill in all required fields.');
+            return;
+        }
+
+        // 1) Sign up the user
+        try {
+            const signupRes = await fetch('/api/auth/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: email,
+                    password: 'Temporary123!', // you can generate a random password or let user set one; for simplicity we use a default
+                    full_name: firstName + ' ' + lastName,
+                    phone: phone
+                })
+            });
+
+            if (!signupRes.ok) {
+                const err = await signupRes.json();
+                alert('Signup failed: ' + (err.error || 'Unknown error'));
+                return;
+            }
+
+            const signupData = await signupRes.json();
+            // The session is now set, so we can proceed to payment
+
+            // 2) Initiate payment
+            const paymentRes = await fetch('/api/payment/initiate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    plan: plan,
+                    currency: currency
+                })
+            });
+
+            if (!paymentRes.ok) {
+                const err = await paymentRes.json();
+                alert('Payment initiation failed: ' + (err.error || 'Unknown error'));
+                return;
+            }
+
+            const paymentData = await paymentRes.json();
+            if (paymentData.redirect_url) {
+                // Redirect to PesaPal payment page
+                window.location.href = paymentData.redirect_url;
+            } else {
+                alert('Payment initiated, but no redirect URL received. Please contact support.');
+            }
+
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An unexpected error occurred. Please try again.');
+        }
     });
 </script>
 
