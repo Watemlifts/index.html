@@ -509,141 +509,103 @@
 
 <script>
     // ===== DEMO DATA (unchanged) =====
-    const demoData = {
-        basic: {
-            name: 'Basic',
-            features: ['Daily trading signals', 'Basic portfolio tracking', 'Email alerts', 'Web3 balance checks'],
-            stats: { balance: '$10,000', profit: '+3.2%', change: 'positive' },
-            signals: [
-                { pair: 'BTC/USD', price: '$67,420', change: '+2.3%' },
-                { pair: 'ETH/USD', price: '$3,520', change: '+1.8%' }
-            ]
-        },
-        premium: {
-            name: 'Premium',
-            features: ['Real-time trading signals', 'Advanced portfolio tracking', 'Telegram/Discord alerts', 'Priority support', 'Custom trading strategies'],
-            stats: { balance: '$50,000', profit: '+8.7%', change: 'positive' },
-            signals: [
-                { pair: 'BTC/USD', price: '$67,420', change: '+2.3%' },
-                { pair: 'ETH/USD', price: '$3,520', change: '+1.8%' },
-                { pair: 'LTC/USD', price: '$82.50', change: '+0.9%' }
-            ]
-        },
-        enterprise: {
-            name: 'Enterprise',
-            features: ['Everything in Premium', 'White-label solution', 'Dedicated API access', '24/7 phone support', 'Team accounts (up to 5)', 'Custom integrations'],
-            stats: { balance: '$200,000', profit: '+15.4%', change: 'positive' },
-            signals: [
-                { pair: 'BTC/USD', price: '$67,420', change: '+2.3%' },
-                { pair: 'ETH/USD', price: '$3,520', change: '+1.8%' },
-                { pair: 'LTC/USD', price: '$82.50', change: '+0.9%' },
-                { pair: 'XRP/USD', price: '$0.51', change: '+1.2%' }
-            ]
-        }
-    };
+    const demoData = { ... };  // keep your existing demoData
 
-    function openDemo(planKey) {
-        const data = demoData[planKey];
-        if (!data) return;
-        document.getElementById('planName').innerText = data.name;
-        let featHtml = '<ul style="list-style:none; padding:0;">';
-        data.features.forEach(f => { featHtml += `<li style="padding:4px 0;">✅ ${f}</li>`; });
-        featHtml += '</ul>';
-        document.getElementById('modalFeatures').innerHTML = featHtml;
-        const profitClass = data.stats.change === 'positive' ? 'green' : 'red';
-        document.getElementById('demoStats').innerHTML = `
-            <div class="stat"><span class="label">Balance</span><br/><span class="value">${data.stats.balance}</span></div>
-            <div class="stat"><span class="label">Total Profit</span><br/><span class="value ${profitClass}">${data.stats.profit}</span></div>
-        `;
-        let sigHtml = '';
-        data.signals.forEach(s => {
-            const changeClass = s.change.startsWith('+') ? 'green' : 'red';
-            sigHtml += `<li><span>${s.pair}</span><span>${s.price} <span class="signal-change ${changeClass}">${s.change}</span></span></li>`;
-        });
-        document.getElementById('demoSignals').innerHTML = sigHtml;
-        document.getElementById('demoModal').classList.add('active');
-    }
+    function openDemo(planKey) { ... } // keep existing functions
 
-    function closeDemo() {
-        document.getElementById('demoModal').classList.remove('active');
-    }
-    document.getElementById('demoModal').addEventListener('click', function(e) {
-        if (e.target === this) closeDemo();
-    });
+    function closeDemo() { ... }
 
     // ============================================================
-    //  NEW: Handle subscription form submission
+    //  NEW: Wait for DOM to be ready, then attach form handler
     // ============================================================
-    document.getElementById('subscriptionForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-
-        // Gather form data
-        const firstName = document.getElementById('firstName').value.trim();
-        const lastName = document.getElementById('lastName').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const phone = document.getElementById('phone').value.trim();
-        const plan = document.getElementById('planSelect').value;
-        const currency = document.getElementById('currency').value;
-        const notes = document.getElementById('notes').value.trim();
-
-        // Validate required fields
-        if (!firstName || !lastName || !email || !phone || !plan || !currency) {
-            alert('Please fill in all required fields.');
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('subscriptionForm');
+        if (!form) {
+            console.error('❌ Form with id "subscriptionForm" not found!');
             return;
         }
 
-        // 1) Sign up the user
-        try {
-            const signupRes = await fetch('/api/auth/signup', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    email: email,
-                    password: 'Temporary123!', // you can generate a random password or let user set one; for simplicity we use a default
-                    full_name: firstName + ' ' + lastName,
-                    phone: phone
-                })
-            });
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            console.log('✅ Form submitted – starting payment flow...');
 
-            if (!signupRes.ok) {
-                const err = await signupRes.json();
-                alert('Signup failed: ' + (err.error || 'Unknown error'));
+            // Gather form data
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const plan = document.getElementById('planSelect').value;
+            const currency = document.getElementById('currency').value;
+            const notes = document.getElementById('notes').value.trim();
+
+            // Validate
+            if (!firstName || !lastName || !email || !phone || !plan || !currency) {
+                alert('Please fill in all required fields.');
                 return;
             }
 
-            const signupData = await signupRes.json();
-            // The session is now set, so we can proceed to payment
+            // Generate a random password (or you can use a fixed one)
+            const randomPassword = Math.random().toString(36).slice(-8) + 'A1!';
 
-            // 2) Initiate payment
-            const paymentRes = await fetch('/api/payment/initiate', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    plan: plan,
-                    currency: currency
-                })
-            });
+            try {
+                // 1) Sign up the user
+                console.log('📝 Signing up user...');
+                const signupRes = await fetch('/api/auth/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: email,
+                        password: randomPassword,
+                        full_name: firstName + ' ' + lastName,
+                        phone: phone
+                    })
+                });
 
-            if (!paymentRes.ok) {
-                const err = await paymentRes.json();
-                alert('Payment initiation failed: ' + (err.error || 'Unknown error'));
-                return;
+                if (!signupRes.ok) {
+                    const err = await signupRes.json();
+                    alert('Signup failed: ' + (err.error || 'Unknown error'));
+                    console.error('Signup error:', err);
+                    return;
+                }
+
+                const signupData = await signupRes.json();
+                console.log('✅ Signup successful:', signupData);
+
+                // 2) Initiate payment
+                console.log('💳 Initiating payment for plan:', plan);
+                const paymentRes = await fetch('/api/payment/initiate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        plan: plan,
+                        currency: currency
+                    })
+                });
+
+                if (!paymentRes.ok) {
+                    const err = await paymentRes.json();
+                    alert('Payment initiation failed: ' + (err.error || 'Unknown error'));
+                    console.error('Payment error:', err);
+                    return;
+                }
+
+                const paymentData = await paymentRes.json();
+                console.log('✅ Payment initiated:', paymentData);
+
+                if (paymentData.redirect_url) {
+                    // Redirect to PesaPal payment page
+                    window.location.href = paymentData.redirect_url;
+                } else {
+                    alert('Payment initiated, but no redirect URL received. Please contact support.');
+                }
+
+            } catch (error) {
+                console.error('❌ Unexpected error:', error);
+                alert('An unexpected error occurred. Please try again.');
             }
-
-            const paymentData = await paymentRes.json();
-            if (paymentData.redirect_url) {
-                // Redirect to PesaPal payment page
-                window.location.href = paymentData.redirect_url;
-            } else {
-                alert('Payment initiated, but no redirect URL received. Please contact support.');
-            }
-
-        } catch (error) {
-            console.error('Error:', error);
-            alert('An unexpected error occurred. Please try again.');
-        }
+        });
     });
-</script>
+</script>t>
 
 </body>
 </html>
