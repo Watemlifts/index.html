@@ -1,1 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🤖 Watemhost Trading Bot</title>
+    <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0b0e17;
+            color: #e0e6ef;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
 
+        /* ===== HEADER ===== */
+        header {
+            text-align: center;
+            padding: 40px 20px 20px;
+        }
+        header h1 {
+            font-size: 3rem;
+            background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+        header p {
+            font-size: 1.2rem;
+            color: #b0c4de;
+            margin-top: 10px;
+        }
+
+        /* ===== FREE TRIAL BANNER ===== */
+        .trial-banner {
+            background: #1a2a4a;
+            border-left: 6px solid #00d2ff;
+            border-radius: 10px;
+            padding: 18px 25px;
+            margin: 30px auto;
+            max-width: 800px;
+            text-align: center;
+            font-size: 1.1rem;
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.15);
+        }
+        .trial-banner strong {
+            color: #00d2ff;
+        }
+
+        /* ===== PLAN CARDS ===== */
+        .plans {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            margin: 40px 0;
+        }
+        .plan {
+            background: #141b2b;
+            border-radius: 16px;
+            padding: 30px 25px;
+            flex: 1 1 280px;
+            max-width: 350px;
+            border: 1px solid #2a3a5a;
+            transition: transform 0.2s, border-color 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+        .plan:hover {
+            transform: translateY(-6px);
+            border-color: #3a7bd5;
+        }
+        .plan h2 {
+            font-size: 1.8rem;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+        .plan .price {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #00d2ff;
+            margin: 12px 0 6px;
+        }
+        .plan .price small {
+            font-size: 1rem;
+            color: #b0c4de;
+        }
+        .plan .features {
+            list-style: none;
+            margin: 20px 0;
+            flex-grow: 1;
+        }
+        .plan .features li {
+            padding: 6px 0;
+            border-bottom: 1px solid #1f2b3f;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .plan .features li::before {
+            content: "✅";
+            color: #2ecc71;
+        }
+        .plan .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            display: inline-block;
+            background: #3a7bd5;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 1rem;
+            flex: 1;
+            text-align: center;
+        }
+        .btn:hover {
+            background: #2a5fa0;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #3a7bd5;
+            color: #3a7bd5;
+        }
+        .btn-outline:hover {
+            background: #3a7bd5;
+            color: #fff;
+        }
+        .btn-demo {
+            background: #1f2b3f;
+            border: 1px solid #3a7bd5;
+        }
+        .btn-demo:hover {
+            background: #2a3a5a;
+        }
+
+        /* ===== SUBSCRIPTION FORM ===== */
+        .form-section {
+            background: #141b2b;
+            border-radius: 16px;
+            padding: 40px 35px;
+            margin: 50px 0;
+            border: 1px solid #2a3a5a;
+        }
+        .form-section h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+        .form-grid .full-width {
+            grid-column: 1 / -1;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: #0b0e17;
+            border: 1px solid #2a3a5a;
+            border-radius: 8px;
+            color: #e0e6ef;
+            font-size: 1rem;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #3a7bd5;
+        }
+        .submit-btn {
+            background: #00d2ff;
+            color: #0b0e17;
+            font-weight: 700;
+            padding: 16px;
+            border: none;
+            border-radius: 40px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .submit-btn:hover {
+            background: #3a7bd5;
+            color: #fff;
+        }
+
+        /* ===== PAYMENT OPTIONS ===== */
+        .payment-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            margin: 30px 0 20px;
+            padding: 20px;
+            background: #0b0e17;
+            border-radius: 12px;
+            border: 1px solid #1f2b3f;
+        }
+        .payment-options .option {
+            flex: 1 1 200px;
+            text-align: center;
+        }
+        .payment-options .option h4 {
+            color: #00d2ff;
+            margin-bottom: 6px;
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.75);
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal {
+            background: #141b2b;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            border-radius: 16px;
+            padding: 30px 30px 20px;
+            border: 1px solid #3a7bd5;
+            position: relative;
+        }
+        .modal h2 {
+            color: #fff;
+            margin-bottom: 10px;
+        }
+        .modal .close-btn {
+            position: absolute;
+            top: 16px;
+            right: 22px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #b0c4de;
+            transition: color 0.2s;
+        }
+        .modal .close-btn:hover {
+            color: #fff;
+        }
+        .modal .demo-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 20px 0;
+            background: #0b0e17;
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .demo-stats .stat {
+            text-align: center;
+        }
+        .demo-stats .stat .label {
+            font-size: 0.85rem;
+            color: #b0c4de;
+        }
+        .demo-stats .stat .value {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        .demo-stats .stat .value.green { color: #2ecc71; }
+        .demo-stats .stat .value.red { color: #e74c3c; }
+        .demo-signals {
+            list-style: none;
+            margin: 15px 0;
+        }
+        .demo-signals li {
+            padding: 8px 0;
+            border-bottom: 1px solid #1f2b3f;
+            display: flex;
+            justify-content: space-between;
+        }
+        .demo-signals .signal-change {
+            font-weight: 600;
+        }
+        .modal .btn-select {
+            background: #00d2ff;
+            color: #0b0e17;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 40px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s;
+            margin-top: 10px;
+        }
+        .modal .btn-select:hover {
+            background: #3a7bd5;
+            color: #fff;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            text-align: center;
+            padding: 30px 0 10px;
+            color: #6a7a8f;
+            font-size: 0.9rem;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 700px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .plans {
+                flex-direction: column;
+                align-items: center;
+            }
+            .plan {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- HEADER -->
+    <header>
+        <h1>🤖 Watemhost Trading Bot</h1>
+        <p>Automated crypto trading &amp; DeFi signals – start your <strong>7‑day free trial</strong> today!</p>
+    </header>
+
+    <!-- FREE TRIAL BANNER -->
+    <div class="trial-banner">
+        🎯 <strong>All plans include a 7‑day free trial</strong> – no credit card required. After the trial, you’ll be charged the selected plan price (UGX or USD). Cancel anytime.
+    </div>
+
+    <!-- PLAN CARDS -->
+    <div class="plans">
+
+        <!-- Basic -->
+        <div class="plan">
+            <h2>Basic</h2>
+            <div class="price">1,000 <small>UGX / month</small></div>
+            <ul class="features">
+                <li>Daily trading signals</li>
+                <li>Basic portfolio tracking</li>
+                <li>Email alerts</li>
+                <li>Web3 balance checks</li>
+            </ul>
+            <div class="actions">
+                <a href="#subscribe" class="btn">Select</a>
+                <button class="btn btn-demo" onclick="openDemo('basic')">🔍 Demo</button>
+            </div>
+        </div>
+
+        <!-- Premium -->
+        <div class="plan">
+            <h2>Premium</h2>
+            <div class="price">2,000 <small>UGX / month</small></div>
+            <ul class="features">
+                <li>Real-time trading signals</li>
+                <li>Advanced portfolio tracking</li>
+                <li>Telegram / Discord alerts</li>
+                <li>Priority support</li>
+                <li>Custom trading strategies</li>
+            </ul>
+            <div class="actions">
+                <a href="#subscribe" class="btn">Select</a>
+                <button class="btn btn-demo" onclick="openDemo('premium')">🔍 Demo</button>
+            </div>
+        </div>
+
+        <!-- Enterprise -->
+        <div class="plan">
+            <h2>Enterprise</h2>
+            <div class="price">3,000 <small>UGX / year</small></div>
+            <ul class="features">
+                <li>Everything in Premium</li>
+                <li>White‑label solution</li>
+                <li>Dedicated API access</li>
+                <li>24/7 phone support</li>
+                <li>Team accounts (up to 5)</li>
+                <li>Custom integrations</li>
+            </ul>
+            <div class="actions">
+                <a href="#subscribe" class="btn">Select</a>
+                <button class="btn btn-demo" onclick="openDemo('enterprise')">🔍 Demo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUBSCRIPTION FORM -->
+    <div id="subscribe" class="form-section">
+        <h2>📝 Subscribe Now</h2>
+        <p style="text-align:center; margin-bottom:25px;">Fill in your details and choose your preferred plan.</p>
+        <form id="subscriptionForm">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="firstName">First Name *</label>
+                    <input type="text" id="firstName" required />
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name *</label>
+                    <input type="text" id="lastName" required />
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" required />
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number (for Mobile Money) *</label>
+                    <input type="tel" id="phone" placeholder="2567XXXXXXXX" required />
+                </div>
+                <div class="form-group">
+                    <label for="planSelect">Select Plan *</label>
+                    <select id="planSelect" required>
+                        <option value="">-- Choose a plan --</option>
+                        <option value="basic">Basic – 1,000 UGX/month</option>
+                        <option value="premium">Premium – 2,000 UGX/month</option>
+                        <option value="enterprise">Enterprise – 3,000 UGX/year</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="currency">Currency *</label>
+                    <select id="currency" required>
+                        <option value="UGX">🇺🇬 UGX (Mobile Money)</option>
+                        <option value="USD">🇺🇸 USD (Card / PayPal)</option>
+                    </select>
+                </div>
+                <div class="form-group full-width">
+                    <label for="notes">Additional Notes (optional)</label>
+                    <textarea id="notes" placeholder="Any special requests?"></textarea>
+                </div>
+            </div>
+            <button type="submit" class="submit-btn">Request Subscription</button>
+        </form>
+        <div style="margin-top:10px; font-size:0.9rem; color:#b0c4de; text-align:center;">
+            By subscribing you agree to our <a href="#" style="color:#00d2ff;">Terms of Service</a>.
+        </div>
+    </div>
+
+    <!-- PAYMENT OPTIONS -->
+    <div class="payment-options">
+        <div class="option">
+            <h4>📱 Mobile Money</h4>
+            <p>MTN / Airtel (UGX):<br /><strong>+256 7XX XXX XXX</strong><br /><small>We’ll confirm via phone.</small></p>
+        </div>
+        <div class="option">
+            <h4>💳 Credit / Debit Cards</h4>
+            <p>Pay securely via <strong>PesaPal</strong><br /><small>Visa, Mastercard, Amex</small></p>
+        </div>
+    </div>
+
+    <!-- DEMO MODALS -->
+    <div id="demoModal" class="modal-overlay">
+        <div class="modal" id="modalContent">
+            <span class="close-btn" onclick="closeDemo()">&times;</span>
+            <h2 id="modalTitle">Demo – <span id="planName">Basic</span></h2>
+            <div id="modalFeatures" style="margin:10px 0;"></div>
+            <div class="demo-stats" id="demoStats"></div>
+            <ul class="demo-signals" id="demoSignals"></ul>
+            <div style="text-align:center;">
+                <button class="btn-select" onclick="closeDemo(); document.getElementById('planSelect').value = document.getElementById('planName').innerText.toLowerCase(); document.getElementById('subscribe').scrollIntoView({behavior:'smooth'});">
+                    Select This Plan &amp; Start Free Trial
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 Watemhost – All rights reserved.<br />
+        <small>Powered by PesaPal &bull; Secure payments</small>
+    </footer>
+</div>
+
+<script>
+
+<script>
+    // ===== DEMO DATA (unchanged) =====
+    const demoData = {
+        basic: {
+            name: 'Basic',
+            features: ['Daily trading signals', 'Basic portfolio tracking', 'Email alerts', 'Web3 balance checks'],
+            stats: { balance: '$10,000', profit: '+3.2%', change: 'positive' },
+            signals: [
+                { pair: 'BTC/USD', price: '$67,420', change: '+2.3%' },
+                { pair: 'ETH/USD', price: '$3,520', change: '+1.8%' }
+            ]
+        },
+        premium: {
+            name: 'Premium',
+            features: ['Real-time trading signals', 'Advanced portfolio tracking', 'Telegram/Discord alerts', 'Priority support', 'Custom trading strategies'],
+            stats: { balance: '$50,000', profit: '+8.7%', change: 'positive' },
+            signals: [
+                { pair: 'BTC/USD', price: '$67,420', change: '+2.3%' },
+                { pair: 'ETH/USD', price: '$3,520', change: '+1.8%' },
+                { pair: 'LTC/USD', price: '$82.50', change: '+0.9%' }
+            ]
+        },
+        enterprise: {
+            name: 'Enterprise',
+            features: ['Everything in Premium', 'White-label solution', 'Dedicated API access', '24/7 phone support', 'Team accounts (up to 5)', 'Custom integrations'],
+            stats: { balance: '$200,000', profit: '+15.4%', change: 'positive' },
+            signals: [
+                { pair: 'BTC/USD', price: '$67,420', change: '+2.3%' },
+                { pair: 'ETH/USD', price: '$3,520', change: '+1.8%' },
+                { pair: 'LTC/USD', price: '$82.50', change: '+0.9%' },
+                { pair: 'XRP/USD', price: '$0.51', change: '+1.2%' }
+            ]
+        }
+    };
+
+    function openDemo(planKey) {
+        const data = demoData[planKey];
+        if (!data) return;
+        document.getElementById('planName').innerText = data.name;
+        let featHtml = '<ul style="list-style:none; padding:0;">';
+        data.features.forEach(f => { featHtml += `<li style="padding:4px 0;">✅ ${f}</li>`; });
+        featHtml += '</ul>';
+        document.getElementById('modalFeatures').innerHTML = featHtml;
+        const profitClass = data.stats.change === 'positive' ? 'green' : 'red';
+        document.getElementById('demoStats').innerHTML = `
+            <div class="stat"><span class="label">Balance</span><br/><span class="value">${data.stats.balance}</span></div>
+            <div class="stat"><span class="label">Total Profit</span><br/><span class="value ${profitClass}">${data.stats.profit}</span></div>
+        `;
+        let sigHtml = '';
+        data.signals.forEach(s => {
+            const changeClass = s.change.startsWith('+') ? 'green' : 'red';
+            sigHtml += `<li><span>${s.pair}</span><span>${s.price} <span class="signal-change ${changeClass}">${s.change}</span></span></li>`;
+        });
+        document.getElementById('demoSignals').innerHTML = sigHtml;
+        document.getElementById('demoModal').classList.add('active');
+    }
+
+    function closeDemo() {
+        document.getElementById('demoModal').classList.remove('active');
+    }
+    document.getElementById('demoModal').addEventListener('click', function(e) {
+        if (e.target === this) closeDemo();
+    });
+
+    // ============================================================
+    //  NEW: Handle subscription form submission
+    // ============================================================
+    document.getElementById('subscriptionForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        // Gather form data
+        const firstName = document.getElementById('firstName').value.trim();
+        const lastName = document.getElementById('lastName').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const plan = document.getElementById('planSelect').value;
+        const currency = document.getElementById('currency').value;
+        const notes = document.getElementById('notes').value.trim();
+
+        // Validate required fields
+        if (!firstName || !lastName || !email || !phone || !plan || !currency) {
+            alert('Please fill in all required fields.');
+            return;
+        }
+
+        // 1) Sign up the user
+        try {
+            const signupRes = await fetch('/api/auth/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: email,
+                    password: 'Temporary123!', // you can generate a random password or let user set one; for simplicity we use a default
+                    full_name: firstName + ' ' + lastName,
+                    phone: phone
+                })
+            });
+
+            if (!signupRes.ok) {
+                const err = await signupRes.json();
+                alert('Signup failed: ' + (err.error || 'Unknown error'));
+                return;
+            }
+
+            const signupData = await signupRes.json();
+            // The session is now set, so we can proceed to payment
+
+            // 2) Initiate payment
+            const paymentRes = await fetch('/api/payment/initiate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    plan: plan,
+                    currency: currency
+                })
+            });
+
+            if (!paymentRes.ok) {
+                const err = await paymentRes.json();
+                alert('Payment initiation failed: ' + (err.error || 'Unknown error'));
+                return;
+            }
+
+            const paymentData = await paymentRes.json();
+            if (paymentData.redirect_url) {
+                // Redirect to PesaPal payment page
+                window.location.href = paymentData.redirect_url;
+            } else {
+                alert('Payment initiated, but no redirect URL received. Please contact support.');
+            }
+
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An unexpected error occurred. Please try again.');
+        }
+    });
+</script>
+
+</body>
+</html>
