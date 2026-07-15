@@ -372,7 +372,7 @@
         <!-- Basic -->
         <div class="plan">
             <h2>Basic</h2>
-            <div class="price">1,000 <small>UGX / month</small></div>
+            <div class="price">50,000 <small>UGX / month</small></div>
             <ul class="features">
                 <li>Daily trading signals</li>
                 <li>Basic portfolio tracking</li>
@@ -388,7 +388,7 @@
         <!-- Premium -->
         <div class="plan">
             <h2>Premium</h2>
-            <div class="price">2,000 <small>UGX / month</small></div>
+            <div class="price">150,000 <small>UGX / month</small></div>
             <ul class="features">
                 <li>Real-time trading signals</li>
                 <li>Advanced portfolio tracking</li>
@@ -405,7 +405,7 @@
         <!-- Enterprise -->
         <div class="plan">
             <h2>Enterprise</h2>
-            <div class="price">3,000 <small>UGX / year</small></div>
+            <div class="price">500,000 <small>UGX / year</small></div>
             <ul class="features">
                 <li>Everything in Premium</li>
                 <li>White‑label solution</li>
@@ -447,9 +447,9 @@
                     <label for="planSelect">Select Plan *</label>
                     <select id="planSelect" required>
                         <option value="">-- Choose a plan --</option>
-                        <option value="basic">Basic – 1,000 UGX/month</option>
-                        <option value="premium">Premium – 2,000 UGX/month</option>
-                        <option value="enterprise">Enterprise – 3,000 UGX/year</option>
+                        <option value="basic">Basic – 50,000 UGX/month</option>
+                        <option value="premium">Premium – 150,000 UGX/month</option>
+                        <option value="enterprise">Enterprise – 500,000 UGX/year</option>
                     </select>
                 </div>
                 <div class="form-group">
